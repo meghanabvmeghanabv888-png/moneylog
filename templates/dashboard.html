@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Welcome {{ current_user.username }}!</h1>
+    <h3>Add New Expense</h3>
+    <form method="POST" action="/add_expense">
+        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+        <input type="text" name="description" placeholder="Description" required>
+        <input type="text" name="category" placeholder="Category e.g. Food, Travel">
+        <button type="submit">Add Expense</button>
+    </form>
+
+    <h3>Your Expenses</h3>
+    <form method="GET" action="/dashboard">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            <option value="Food" {% if current_filter=='Food' %}selected{% endif %}>Food</option>
+            <option value="Travel" {% if current_filter=='Travel' %}selected{% endif %}>Travel</option>
+            <option value="Shopping" {% if current_filter=='Shopping' %}selected{% endif %}>Shopping</option>
+            <option value="Other" {% if current_filter=='Other' %}selected{% endif %}>Other</option>
+        </select>
+    </form>
+    <br>
+
+    {% if expenses %}
+        <ul>
+        {% for expense in expenses %}
+            <li>
+                {{ expense.date.strftime('%Y-%m-%d') }} - ${{ expense.amount }} - {{ expense.description }} ({{ expense.category }})
+                <a href="/delete_expense/{{ expense.id }}" onclick="return confirm('Delete this expense?')">Delete</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No expenses yet. Add one above!</p>
+    {% endif %}
+</body>
+</html>
